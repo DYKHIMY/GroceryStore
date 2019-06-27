@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.GroceryStore.mapper.UserMapper">
+    <resultMap id="userResult" type="com.GroceryStore.model.Users">
+        <id column="user_id" property="userId"></id>
+        <result column="user_name" property="userName"></result>
+        <result column="user_password" property="userPassword"></result>
+        <result column="user_tel" property="userTel"></result>
+        <result column="user_sex" property="userSex"></result>
+        <result column="user_appraise" property="userAppraise"></result>
+    </resultMap>
+    <resultMap id="appraiseResult" type="com.GroceryStore.model.Appraise">
+        <id column="appraise_id" property="appraiseId"></id>
+        <result column="appraise_content" property="appraiseContent"></result>
+        <result column="appraise_time" property="appraiseTime"></result>
+        <result column="appraise_goodid" property="goodId"></result>
+    </resultMap>
+    <select id="selectAll" resultMap="userResult">
+        select * from user
+    </select>
+    <select id="selectUser" parameterType="int" resultMap="userResult">
+        select user_id ,user_name,user_password ,user_tel,user_sex from user where user_id=#{userId}
+   </select>
+    <insert id="insertUser" parameterType="com.GroceryStore.model.Users">
+        insert into user(user_name,user_password) values (#{userName},#{userPassword})
+    </insert>
+    <delete id="deleteUser" parameterType="int">
+        delete from user where user_id=#{userId}
+    </delete>
+    <update id="updateUser" parameterType="com.GroceryStore.model.Users">
+        update user set user_name=#{userName},user_password=#{userPassword},user_tel=#{userTel},user_sex=#{userSex} where user_id=#{userId}
+    </update>
+
+
+    <insert id="insertAppraise" parameterType="com.GroceryStore.model.Appraise">
+        insert into appraise(appraise_content, appraise_time, appraise_goodid) values (#{appraiseContent},#{appraiseTime},#{goodId})
+    </insert>
+    <select id="selectAppraiseBySell" parameterType="int" resultMap="appraiseResult">
+        select * from appraise where appraise_goodid in (select good_id from good where good_sellid=#{sellerid})order by appraise_id desc
+    </select>
+    <select id="selectAppraisesByBuy" parameterType="int" resultMap="appraiseResult">
+        select * from appraise where appraise_goodid in (select good_id from good where good_buyid=#{buyerid})order by appraise_id desc
+    </select>
+    <delete id="deleteAppraise" parameterType="int">
+        delete from appraise where appraise_id=#{appid}
+    </delete>
+</mapper>

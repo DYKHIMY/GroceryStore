@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.GroceryStore.mapper.StoreMapper">
+    <resultMap id="goodsResult" type="com.GroceryStore.model.Goods">
+        <id column="good_id" property="goodId"></id>
+        <result column="good_name" property="goodName"></result>
+        <result column="good_sort" property="goodSort"></result>
+        <result column="good_time" property="goodTime"></result>
+        <result column="good_intro" property="goodIntro"></result>
+        <result column="good_price" property="goodPrice"></result>
+        <result column="good_state" property="goodState"></result>
+        <result column="good_sellid" property="goodSellId"></result>
+        <result column="good_buyid" property="goodBuyId"></result>
+        <result column="good_img1" property="goodImg1"></result>
+        <result column="good_img2" property="goodImg2"></result>
+        <result column="good_img3" property="goodImg3"></result>
+        <result column="good_img4" property="goodImg4"></result>
+        <result column="good_img5" property="goodImg5"></result>
+    </resultMap>
+    <select id="selectAllGoods" resultMap="goodsResult">
+        select * from good where good_state=0 order by good_id desc
+    </select>
+    <select id="selectGood" parameterType="int" resultMap="goodsResult">
+        select * from good where good_id=#{goodId}
+    </select>
+    <select id="selectState" parameterType="int" resultType="int">
+        select good_state from good where good_id=#{goodId}
+    </select>
+    <delete id="deleteGood" parameterType="int">
+        delete from good where good_id=#{goodId}
+    </delete>
+    <update id="changeGoodByStateSell" parameterType="com.GroceryStore.model.Goods">
+    update good set good_state=#{goodState},good_buyid=#{goodBuyId} where good_id=#{goodId}
+    </update>
+    <insert id="addGood" parameterType="com.GroceryStore.model.Goods">
+        insert into good (good_name, good_sort, good_time, good_intro, good_price, good_sellid, good_state) values (#{goodName},#{goodSort},#{goodTime},
+        #{goodIntro},#{goodPrice},#{goodSellId},#{goodState})
+    </insert>
+    <!--添加商品图片-->
+    <insert id="addImg" parameterType="com.GroceryStore.model.Goods">
+        insert into good( good_name, good_sort, good_time, good_intro, good_price, good_sellid, good_state, good_img1, good_img2, good_img3, good_img4, good_img5) values
+        (#{goodName},#{goodSort},#{goodTime},#{goodIntro},#{goodPrice},#{goodSellId},#{goodState},#{goodImg1},#{goodImg2},#{goodImg3},#{goodImg4},#{goodImg5})
+     </insert>
+    <update id="changeGood" parameterType="com.GroceryStore.model.Goods">
+        update good set good_name=#{goodName},good_sort=#{goodSort},good_price=#{goodPrice},good_time=#{goodTime},good_intro=#{goodIntro} where good_id=#{goodId}
+    </update>
+    <select id="selectGoodByUser" parameterType="int" resultMap="goodsResult">
+        select * from good where good_buyid=#{buyid} order by good_id desc
+    </select>
+    <select id="selectGoodBySell" parameterType="int" resultMap="goodsResult">
+        select * from good where good_sellid=#{sellid} order by good_id desc
+    </select>
+    <select id="selectGoodBySort" parameterType="int" resultMap="goodsResult">
+        select * from good where good_sort=#{sortid} and good_state=0 order by good_id desc
+    </select>
+    <select id="selectGoodsByName" parameterType="com.GroceryStore.model.Goods" resultMap="goodsResult" resultType="com.GroceryStore.model.Goods">
+         SELECT * FROM good
+        where  good_name LIKE CONCAT(CONCAT('%',#{goodName},'%')) order by good_id desc
+    </select>
+</mapper>

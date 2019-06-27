@@ -1,0 +1,15 @@
+.comWidth{width: 1190px;margin-left: auto;margin-right: auto;}
+.leftArea{float: left;}
+.rightArea{float: right;}
+a:hover{color:#ff4400;}
+.navlist1{width: 1150px;height: 150px;font-size: 15px;border-bottom: #e6e6e6 1px solid;margin-top: 50px;}
+.navlist1-main a{display: block;width: 142px;height: 44px;text-align: center;vertical-align: middle;line-height: 40px;background-color: #e4e4e4;border-right: #FFFFFF 1px solid;}
+.navlist1-main-special a{display: block;background-color: #ff4400;width: 132px;height: 44px;text-align: center;vertical-align: middle;line-height: 40px;color: #ffffff;border-radius: 4px;}
+.navlist-special{position: relative;top: -40px;float: left;left: 26px;font-size: 18px;font-style: italic;color: #ff4400;cursor: pointer;}
+
+.appraise{width: auto;height: 400px ;margin:50px 0 100px 350px;}
+.appraise-p{font-size: 18px;padding-top: 15px;}
+.appraise-text{width: 650px;height: 200px;border:solid 	#686868 1px;}
+.part-2{position: relative;top: -390px;left: 450px;}
+.part-2 p{font-size: 22px;font-style:italic;padding-bottom: 10px;}
+.app-but{margin-top: 15px; margin-left: 590px; color:#A00000;width:60px;height: 35px;font-size: 20px;}

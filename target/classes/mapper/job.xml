@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.GroceryStore.mapper.JobMapper">
+    <!--为返回list设置了resultMap-->
+    <resultMap type="com.GroceryStore.model.Jobs" id="JobResult">
+        <id column="job_id"   property="jobId"/>
+        <result column="job_name"   property="jobName"/>
+        <result column="job_sort"   property="jobSort"/>
+        <result column="job_time"   property="jobTime"/>
+        <result column="job_address"   property="jobAddress"/>
+        <result column="job_intro"   property="jobIntro"/>
+        <result column="job_employer_id"   property="jobEmployerId"/>
+        <result column="job_employee_id" property="jobEmployeeId"/>
+        <result column="job_state"   property="jobState"/>
+        <result property="jobPrice" column="job_price"/>
+        <result property="jobSex" column="job_sex"/>
+        <result property="jobEdu" column="job_edu"/>
+        <result property="jobAge" column="job_age"/>
+    </resultMap>
+    <resultMap type="com.GroceryStore.model.Resumes" id="ResumeResult">
+        <!--column为数据库中字段名称，property是对应的bean里面的属性名称-->
+        <id column="resume_id"   property="resId"/>
+        <result column="resume_jobid"   property="jobId"/>
+        <result column="resume_buyid"   property="jobBuyId"/>
+        <result column="resume_content"   property="resContent"/>
+        <result column="resume_applicant_name"   property="resApplicantName"/>
+        <result column="resume_applicant_sex" property="resApplicantSex"/>
+        <result column="resume_applicant_age" property="resApplicantAge"/>
+        <result column="resume_applicant_edu" property="resApplicantEdu"/>
+        <result column="resume_applicant_exe" property="resApplicantExp"/>
+        <result column="resume_applicant_tel" property="resApplicantTel"/>
+    </resultMap>
+    <!--增加一条兼职信息-->
+    <insert id="addJob" parameterType="com.GroceryStore.model.Jobs">
+        INSERT INTO job(job_name,job_sort,job_time,job_address,job_intro,job_employer_id,job_state,job_price,job_sex,job_edu,job_age)
+        VALUES (#{jobName},#{jobSort},#{jobTime},#{jobAddress},#{jobIntro},#{jobEmployerId},#{jobState},#{jobPrice},#{jobSex},#{jobEdu},#{jobAge})
+   </insert>
+    <!--显示所有的兼职信息-->
+    <select id="listJob" resultMap="JobResult">
+        SELECT * FROM job where job_state=0 order by job_id desc
+    </select>
+    <!--查询个人发布的兼职-->
+    <select id="selectJobByUser" resultMap="JobResult" parameterType="int">
+        SELECT * FROM job where job_employer_id=#{userid} order by job_id desc
+    </select>
+    <!--根据id删除-->
+    <delete id="deleteJob" parameterType="int">
+        delete from job where job_id=#{jobId}
+    </delete>
+    <!--更改兼职信息-->
+    <update id="updateJob" parameterType="com.GroceryStore.model.Jobs">
+        update job set job_name=#{jobName},job_sort=#{jobSort},job_time=#{jobTime},job_address=#{jobAddress},job_intro=#{jobIntro},job_employer_id=#{jobEmployerId},job_state=#{jobState},
+        job_price=#{jobPrice},job_sex=#{jobSex},job_edu=#{jobEdu},job_age=#{jobAge} where job_id=#{jobId}
+    </update>
+    <select id="selectJob" parameterType="int" resultMap="JobResult"> SELECT*FROM job WHERE job_id=#{jobId} </select>
+    <!--模糊查询-->
+    <select id="findByName" resultType="com.GroceryStore.model.Jobs" parameterType="com.GroceryStore.model.Jobs" resultMap="JobResult">
+        <!--SELECT * FROM job WHERE job_name LIKE ? OR job_class LIKE ? OR job_time LIKE ? OR job_intro LIKE ? OR job_user LIKE ? OR job_state LIKE ?-->
+        SELECT * FROM job
+        where  job_name LIKE CONCAT(CONCAT('%',#{jobName},'%')) order by job_id desc
+    </select>
+    <update id="updateJobByState" parameterType="com.GroceryStore.model.Jobs">
+        update job set job_state=1,job_employee_id=#{jobEmployeeId} where job_id=#{jobId}
+    </update>
+    <select id="findByState" parameterType="int" resultType="int"> select job_state from job where job_id=#{jobId} </select>
+    <select id="selectJobByReq" parameterType="com.GroceryStore.model.Jobs" resultMap="JobResult">
+        SELECT * from job where job_state=0
+        <if test="jobAddress==1">
+            and job_address=#{jobAddress}
+        </if>
+        <if test="jobSex==1">
+            and job_sex=#{jobSex}
+        </if>
+        <if test="jobEdu==1">
+            and job_edu=#{jobEdu}
+        </if>
+        <if test="jobAge==1">
+            and job_age=#{jobAge}
+        </if>
+    </select>
+    <!--简历部分-->
+    <!--增加一条简历信息-->
+    <insert id="addResume" parameterType="com.GroceryStore.model.Resumes">
+        INSERT INTO resume(resume_jobid,resume_buyid,resume_content,resume_applicant_name,resume_applicant_sex,resume_applicant_age,resume_applicant_edu,resume_applicant_exp,resume_applicant_tel)
+        VALUES (#{jobId},#{jobBuyId},#{resContent},#{resApplicantName},#{resApplicantSex},#{resApplicantAge},#{resApplicantEdu},#{resApplicantExp},#{resApplicantTel})
+   </insert>
+
+    <select id="findResumeByJobId" parameterType="int" resultMap="ResumeResult">
+        SELECT*FROM resume WHERE resume_jobid=#{jobId}
+    </select>
+    <select id="selectOneResume" parameterType="int" resultMap="ResumeResult">
+        select * from resume where resume_id=#{resid};
+    </select>
+    <select id="selectResumeJob" parameterType="int" resultMap="JobResult">
+        select * from job where job_id in (select resume_jobid from resume where resume_buyid=#{userid})order by job_id desc
+    </select>
+</mapper>
